@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order | The HRS Store</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .track-page { background: var(--color-light-gray, #f8f9fa); }
+        .track-container { padding: 4rem 2.5rem; max-width: 600px; margin: 4rem auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; }
+        .track-container h1 { font-size: 2.2rem; margin-bottom: 1rem; color: var(--color-black); font-family: var(--font-heading); }
+        .track-container p { color: var(--color-text); margin-bottom: 2rem; line-height: 1.6; font-size: 1.05rem;}
+        .track-form { display: flex; flex-direction: column; gap: 1.2rem; }
+        .track-input { padding: 1.2rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; font-family: var(--font-primary); width: 100%; outline: none; transition: all 0.3s; background: #fafafa;}
+        .track-input:focus { border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); background: white;}
+        .track-btn { padding: 1.2rem; font-size: 1.1rem; background-color: var(--color-black); color: var(--color-gold); font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 1px;}
+        .track-btn:hover { background-color: #333; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0, 0.15); }
+        .track-result { margin-top: 2rem; display: none; padding: 1.5rem; background: #f0faf3; border-radius: 8px; border-left: 4px solid var(--color-accent-green); text-align: left; }
+        .track-result.show { display: block; animation: fadeIn 0.5s ease; }
+        .track-result h3 { color: var(--color-accent-green); margin-bottom: 0.5rem; font-family: var(--font-heading); font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="track-page">
+
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="THE HRS STORE" class="brand-logo">
+            </a>
+            <nav class="nav">
+                <a href="index.html#benefits">Benefits</a>
+                <a href="index.html#reviews">Reviews</a>
+            </nav>
+            <a href="buy.html" class="btn btn-outline btn-small hide-mobile">Buy Now</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="track-container">
+            <i class="ph ph-package" style="font-size: 4.5rem; color: var(--color-black); margin-bottom: 1rem;"></i>
+            <h1>Track Your Order</h1>
+            <p>Enter your tracking number below to check the real-time status of your delivery.</p>
+            
+            <form class="track-form" id="trackForm">
+                <input type="text" id="trackOrderNum" class="track-input" placeholder="e.g. HRS-123456789" required autocomplete="off">
+                <button type="submit" class="track-btn">
+                    <i class="ph-bold ph-magnifying-glass"></i> Track Order
+                </button>
+            </form>
+
+            <div class="track-result" id="trackResult">
+                <h3><i class="ph-fill ph-check-circle"></i> Status: In Transit</h3>
+                <p style="margin-bottom: 0.5rem;"><strong>Tracking No:</strong> <span id="displayTrackNum"></span></p>
+                <p style="margin-bottom: 0; font-size: 0.95rem;">Your order has been officially dispatched from our facility and is currently moving with our delivery partner. It is expected to arrive within your standard delivery window.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer bg-dark color-light" style="padding: 3rem 0; text-align: center; margin-top: auto;">
+        <div class="container">
+            <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                <a href="contact.html">Contact Us</a>
+                <a href="shipping-policy.html">Shipping Policy</a>
+                <a href="refund-policy.html">Refund Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="privacy-policy.html">Privacy Policy</a>
+            </div>
+            <p>&copy; 2026 The HRS Store. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('trackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const val = document.getElementById('trackOrderNum').value;
+            const btn = this.querySelector('button');
+            const resultDiv = document.getElementById('trackResult');
+            
+            // Reset state
+            resultDiv.classList.remove('show');
+            btn.innerHTML = '<i class="ph ph-spinner-gap ph-spin"></i> Searching...';
+            btn.style.opacity = '0.8';
+            document.activeElement.blur();
+            
+            setTimeout(() => {
+                document.getElementById('displayTrackNum').textContent = val.toUpperCase();
+                resultDiv.classList.add('show');
+                btn.innerHTML = '<i class="ph-bold ph-check"></i> Status Updated';
+                btn.style.backgroundColor = 'var(--color-accent-green)';
+                btn.style.color = 'white';
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="ph-bold ph-magnifying-glass"></i> Track Another';
+                    btn.style.backgroundColor = 'var(--color-black)';
+                    btn.style.color = 'var(--color-gold)';
+                    btn.style.opacity = '1';
+                }, 2500);
+            }, 1200);
+        });
+    </script>
+</body>
+</html>
